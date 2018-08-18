@@ -1,28 +1,20 @@
 {
-  "name": "think-session-redis",
+  "name": "think-session-redis2",
   "description": "Use redis to store session data",
-  "version": "1.0.4",
-  "author": {
-    "name": "huangxiaolu",
-    "email": "lu.huang90@gmail.com"
-  },
+  "version": "1.0.0",
   "scripts": {
     "test": "eslint index.js && nyc ava test/index.js ",
     "coverage": "nyc report --reporter=html",
     "lint": "eslint index.js",
     "lint-fix": "eslint --fix index.js"
   },
-  "contributors": [
-    {
-      "name": "huangxiaolu",
-      "email": "lu.huang90@gmail.com"
-    }
-  ],
   "main": "index.js",
   "dependencies": {
     "debug": "^2.6.1",
-    "think-helper": "^1.0.0",
-    "think-redis": "^1.0.5"
+    "think-helper": "^1.0.0"
+  },
+  "peerDependencies": {
+    "think-redis2": "^1.0.1"
   },
   "devDependencies": {
     "ava": "^0.18.2",
@@ -34,16 +26,20 @@
     "mock-require": "^2.0.1",
     "nyc": "^7.0.0"
   },
-  "keywords": [],
+  "keywords": [
+    "thinkjs",
+    "session",
+    "redis"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thinkjs/think-session-redis"
+    "url": "https://github.com/hm496/think-session-redis"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "readmeFilename": "README.md",
   "bugs": {
-    "url": "https://github.com/thinkjs/think-session-redis/issues"
+    "url": "https://github.com/hm496/think-session-redis.git/issues"
   }
 }

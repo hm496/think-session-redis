@@ -1,4 +1,3 @@
-const ThinkRedis = require('think-redis');
 const assert = require('assert');
 const helper = require('think-helper');
 const debug = require('debug')('think-session-redis');
@@ -15,10 +14,10 @@ class RedisSession {
    * @param {Object} options cookie options
    * @param {Object} ctx koa ctx
    */
-  constructor(options = {}, ctx) {
+  constructor (options = {}, ctx) {
     assert(options.cookie, '.cookie required');
     this.options = options;
-    this.redis = new ThinkRedis(this.options);
+    this.redis = ctx.redis(options.redisName);
     this.ctx = ctx;
     this.data = {};
     this.status = 0;
@@ -27,7 +26,7 @@ class RedisSession {
   /**
    * init session data
    */
-  [initSessionData]() {
+  [initSessionData] () {
     if (this.initPromise) {
       return this.initPromise;
     }
@@ -44,24 +43,26 @@ class RedisSession {
     }).catch(err => debug(err));
     return this.initPromise;
   }
+
   /**
    * auto save session data when it is changed
    */
-  [autoSave]() {
+  [autoSave] () {
     this.ctx.res.once('finish', () => {
       if (this.status === -1) {
         return this.redis.delete(this.options.cookie);
       } else if (this.status === 1) {
         const maxAge = this.options.maxAge;
-        return this.redis.set(this.options.cookie, JSON.stringify(this.data), maxAge ? helper.ms(maxAge) : undefined);
+        return this.redis.set(this.options.cookie, JSON.stringify(this.data), 'PX', maxAge ? helper.ms(maxAge) : undefined);
       }
     });
   }
+
   /**
    * get session data
    * @param {String} name
    */
-  get(name) {
+  get (name) {
     return this[initSessionData]().then(() => {
       if (this.options.autoUpdate) {
         this.status = 1;
@@ -69,12 +70,13 @@ class RedisSession {
       return name ? this.data[name] : this.data;
     });
   }
+
   /**
    * set session data
    * @param {String} name
    * @param {Mixed} value
    */
-  set(name, value) {
+  set (name, value) {
     return this[initSessionData]().then(() => {
       this.status = 1;
       if (value === null) {
@@ -84,10 +86,11 @@ class RedisSession {
       }
     });
   }
+
   /**
    * delete session data
    */
-  delete() {
+  delete () {
     this.status = -1;
     this.data = {};
     return Promise.resolve();

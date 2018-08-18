@@ -1,34 +1,28 @@
-# think-session-redis
-Use Redis to store session for ThinkJS
-
-[![Build Status](https://img.shields.io/travis/thinkjs/think-session-redis/master.svg?style=flat-square)](https://travis-ci.org/thinkjs/think-session-redis)
-[![Coverage Status](https://img.shields.io/coveralls/thinkjs/think-session-redis/master.svg?style=flat-square)](https://coveralls.io/github/thinkjs/think-session-redis?branch=master)
-[![npm](https://img.shields.io/npm/v/think-session-redis.svg?colorB=brightgreen&style=flat-square)](https://www.npmjs.com/package/think-session-redis)
-
+# think-session-redis2
+Use `think-redis2` to store session for ThinkJS   
+forked from https://github.com/thinkjs/think-session-redis
 
 ## Install
 
 ```
-npm install think-session-redis
+npm install think-redis2
+npm install think-session-redis2
 ```
 
 ## How to use
 
 config file `src/config/adapter.js`, add options:
 
-```js
-const redisSession = require('think-session-redis');
+```typescript
+const redisSession = require('think-session-redis2');
 exports.session = {
   type: 'redis',
   common: {
     cookie: {
-      name: 'thinkjs',
-      //maxAge: '',
-      //expires: '',
-      path: '/',  //a string indicating the path of the cookie
-      //domain: '',
-      //secure: false,
-      //keys: [],
+      name: 'NODESESSID',
+      maxAge: 24 * 3600 * 1000,
+      domain: '',
+      path: '/',
       httpOnly: true,
       sameSite: false,
       signed: false,
@@ -36,9 +30,10 @@ exports.session = {
     }
   },
   redis: {
+    redisName:"rc1", // => ctx.redis(options.redisName)
     handle: redisSession,
-    maxAge: 3600 * 1000, //session timeout, if not set, session will be persistent.
-    autoUpdate: false, //update expired time when get session, default is false
+    maxAge: 3600 * 1000, // session timeout, if not set, session will be persistent.
+    autoUpdate: false, // update expired time when get session, default is false
   }
 }
 ```
