@@ -16,6 +16,11 @@ class RedisSession {
    */
   constructor (options = {}, ctx) {
     assert(options.cookie, '.cookie required');
+    if (typeof options.redisKey === "function") {
+      this.cookie = options.redisKey(options.cookie);
+    } else {
+      this.cookie = options.cookie;
+    }
     this.options = options;
     this.redis = ctx.redis(options.redisName);
     this.ctx = ctx;
@@ -36,7 +41,7 @@ class RedisSession {
       this.initPromise = Promise.resolve();
       return this.initPromise;
     }
-    this.initPromise = this.redis.get(this.options.cookie).then(content => {
+    this.initPromise = this.redis.get(this.cookie).then(content => {
       content = JSON.parse(content);
       if (helper.isEmpty(content)) return;
       this.data = content;
@@ -50,10 +55,10 @@ class RedisSession {
   [autoSave] () {
     this.ctx.res.once('finish', () => {
       if (this.status === -1) {
-        return this.redis.delete(this.options.cookie);
+        return this.redis.delete(this.cookie);
       } else if (this.status === 1) {
         const maxAge = this.options.maxAge;
-        return this.redis.set(this.options.cookie, JSON.stringify(this.data), 'PX', maxAge ? helper.ms(maxAge) : undefined);
+        return this.redis.set(this.cookie, JSON.stringify(this.data), 'PX', maxAge ? helper.ms(maxAge) : undefined);
       }
     });
   }

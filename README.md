@@ -31,6 +31,10 @@ exports.session = {
   },
   redis: {
     redisName:"rc1", // => ctx.redis(options.redisName)
+    // custom redis key
+    redisKey(SESSIONID: string) {
+      return "[rc1](b)SESSION" + SESSIONID;
+    },
     handle: redisSession,
     maxAge: 3600 * 1000, // session timeout, if not set, session will be persistent.
     autoUpdate: false, // update expired time when get session, default is false
