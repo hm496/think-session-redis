@@ -55,7 +55,7 @@ class RedisSession {
   [autoSave] () {
     this.ctx.res.once('finish', () => {
       if (this.status === -1) {
-        return this.redis.delete(this.cookie);
+        return this.redis.del(this.cookie);
       } else if (this.status === 1) {
         const maxAge = this.options.maxAge;
         return this.redis.set(this.cookie, JSON.stringify(this.data), 'PX', maxAge ? helper.ms(maxAge) : undefined);
@@ -96,9 +96,10 @@ class RedisSession {
    * delete session data
    */
   delete () {
-    this.status = -1;
-    this.data = {};
-    return Promise.resolve();
+    return this[initSessionData]().then(() => {
+      this.status = -1;
+      this.data = {};
+    });
   }
 }
 
